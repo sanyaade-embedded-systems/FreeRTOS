@@ -983,7 +983,7 @@ signed portBASE_TYPE xReturn;
     xQueueHandle xReturn;
 	portBASE_TYPE xRunningPrivileged = prvRaisePrivilege();
 
-		xReturn = xQueueHandle xQueueCreateCountingSemaphore( uxCountValue, uxInitialCount );
+		xReturn = xQueueCreateCountingSemaphore( uxCountValue, uxInitialCount );
 		portRESET_PRIVILEGE( xRunningPrivileged );
 		return xReturn;
 	}
@@ -1022,7 +1022,7 @@ signed portBASE_TYPE xReturn;
    	signed portBASE_TYPE xReturn;
 	portBASE_TYPE xRunningPrivileged = prvRaisePrivilege();
 
-		xReturn = 	signed portBASE_TYPE xQueueAltGenericSend( pxQueue, pvItemToQueue, xTicksToWait, xCopyPosition );
+		xReturn = xQueueAltGenericSend( pxQueue, pvItemToQueue, xTicksToWait, xCopyPosition );
 		portRESET_PRIVILEGE( xRunningPrivileged );
 		return xReturn;
 	}
