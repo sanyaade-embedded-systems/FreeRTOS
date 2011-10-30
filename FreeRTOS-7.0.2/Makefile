@@ -41,15 +41,6 @@ ifeq ($(MEM_MANG), MEM_STDLIB)
 SRCS   += portable/MemMang/heap_3.c
 endif
 
-SRCS   += portable/Startup/syscalls.c
-ifeq ($(TARGET_CPU), LPC1769)
-ifeq ($(LPC1769_MPU), YES)
-SRCS   += portable/Startup/startup_lpc17_mpu.c
-else
-SRCS   += portable/Startup/startup_lpc17.c
-endif
-endif
-
 OBJS    = $(patsubst %.c,%.o,$(SRCS))
 
 all: $(LIB)
