@@ -554,6 +554,9 @@ extern unsigned long __SRAM_segment_start__[];
 extern unsigned long __SRAM_segment_end__[];
 extern unsigned long __privileged_data_start__[];
 extern unsigned long __privileged_data_end__[];
+extern unsigned long __AHBRAM_segment_start__[];
+extern unsigned long __AHBRAM_segment_end__[];
+
 long lIndex;
 unsigned long ul;
 
@@ -583,9 +586,21 @@ unsigned long ul;
 				( portMPU_REGION_CACHEABLE_BUFFERABLE ) |
 				prvGetMPURegionSizeSetting( ( unsigned long ) __privileged_data_end__ - ( unsigned long ) __privileged_data_start__ ) |
 				( portMPU_REGION_ENABLE );
-				
+
+		/* Allow access to the AHBRAM0 and AHBRAM1 RAM regions. */
+        xMPUSettings->xRegion[ 2 ].ulRegionBaseAddress =
+				( ( unsigned long ) __AHBRAM_segment_start__ ) | /* Base address. */
+				( portMPU_REGION_VALID ) |
+				( portSTACK_REGION + 2 );
+
+		xMPUSettings->xRegion[ 2 ].ulRegionAttribute =
+				( portMPU_REGION_READ_WRITE ) |
+				( portMPU_REGION_CACHEABLE_BUFFERABLE ) |
+				( prvGetMPURegionSizeSetting( ( unsigned long ) __AHBRAM_segment_end__ - ( unsigned long ) __AHBRAM_segment_start__ ) ) |
+				( portMPU_REGION_ENABLE );
+
 		/* Invalidate all other regions. */
-		for( ul = 2; ul <= portNUM_CONFIGURABLE_REGIONS; ul++ )
+		for( ul = 3; ul <= portNUM_CONFIGURABLE_REGIONS; ul++ )
 		{ 
 			xMPUSettings->xRegion[ ul ].ulRegionBaseAddress = ( portSTACK_REGION + ul ) | portMPU_REGION_VALID;	
 			xMPUSettings->xRegion[ ul ].ulRegionAttribute = 0UL;
@@ -950,6 +965,15 @@ unsigned portBASE_TYPE uxReturn;
 	uxReturn = uxQueueMessagesWaiting( pxQueue );
 	portRESET_PRIVILEGE( xRunningPrivileged );
 	return uxReturn;
+}
+/*-----------------------------------------------------------*/
+
+void MPU_vQueueDelete( xQueueHandle pxQueue )
+{
+portBASE_TYPE xRunningPrivileged = prvRaisePrivilege();
+
+	vQueueDelete( pxQueue );
+	portRESET_PRIVILEGE( xRunningPrivileged );
 }
 /*-----------------------------------------------------------*/
 
