@@ -21,6 +21,13 @@ SRCS   += queue.c
 SRCS   += tasks.c
 SRCS   += timers.c
 
+# Port for Cortex-M0 processors
+ifeq ($(TARGET_CPU_SUBFAMILY), CORTEX_M0)
+SRCS   += portable/GCC/ARM_CM0/port.c
+CFLAGS += -I"$(PWDDIR)/portable/GCC/ARM_CM0"
+endif
+
+# Port for Cortex-M3 processors
 ifeq ($(TARGET_CPU_SUBFAMILY), CORTEX_M3)
 ifeq ($(LPC1769_MPU), YES)
 SRCS   += portable/GCC/ARM_CM3_MPU/port.c
